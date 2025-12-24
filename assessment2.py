@@ -49,7 +49,7 @@ for idx, admin in gm_districts.iterrows():
         tweet_points = []
         
         #Calculate the required number of random locations
-        sample_number = 1000
+        sample_number = 500
         while len(tweet_points) < sample_number:
             x = uniform (low=minx, high=maxx)
             y = uniform (low=miny, high=maxy)
