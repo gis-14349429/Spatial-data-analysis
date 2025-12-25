@@ -106,10 +106,10 @@ my_ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
     ha='center', va='center', fontsize=20, xycoords=my_ax.transAxes)
 
 # add scalebar
-my_ax.add_artist(ScaleBar(dx=1, units="m", location="lower right"))
+my_ax.add_artist(ScaleBar(dx=100, units="m", location="lower right"))
 
 #Save the image
-savefig('./out/first-border.png')
+savefig('./out/twitter_activity_gm.png')
 
 
 
