@@ -86,27 +86,18 @@ fig, my_ax = subplots(1,1,figsize=(16,10))
 my_ax.set_title("Twitter activity in Greater Manchester")
 
 rio_show(
-    best_location,
+    outputSurface,
     ax=my_ax,
-    contour=True,
-    transform=best_location.transform,
-    colors=['white'],
-    linewidths=[0.5],
+    transform=transform,
+    cmap="hot",
     )
 
-GeoSeries(tweet_points).plot(
+gm_districts.boundary.plot(
     ax=my_ax,
-    markersize=50,
-    color='red',
-    edgecolor='white'
+    color='black',
+    linewidth=1
     )
 
-GeoSeries(gm_districts).plot(
-    ax=my_ax,
-    markersize=50,
-    color='red',
-    edgecolor='white'
-    )
 
 # add north arrow
 x, y, arrow_length = 0.97, 0.99, 0.1
