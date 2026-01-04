@@ -32,21 +32,39 @@ rows = pop_data.shape[0]
 cols = pop_data.shape[1]
 outputSurface = [[0.0 for _ in range(cols)] for _ in range(rows)]
 
+#Creating an empty list
+tweet_points = []
+#Looping over each administrative area
 for idx, admin in gm_districts.iterrows():
     
     #Geometry of the admin
     geom = admin.geometry 
     
+    centroid = geom.centroid
+    
     #Get the bounds radius of the admin
     minx, miny, maxx, maxy = geom.bounds
     
-    #Tweets belonging to this district
-    district_tweets = tweets_dataset[tweets_dataset.within(geom)]
+    #Bounding radius
+    br = max(maxx-minx, maxy-miny)/2
     
-    for _, tweet in district_tweets.iterrows():
+    #Select points within this polygon
+    tweet_points_in_admin = tweet_points[tweet_points.within(geom)]
+    if tweet_points_in_admin.empty:
+        continue
+    
+    for _, points in tweet_points_in_admin.iterrows():
+        #Initialize the location where most tweets generated
+        best_location = None
+        #Initialize the population value
+        highest_pop = -float("inf")
         
-        #Creating an empty list
-        tweet_points = []
+        #Checking multiple random locations inside the polygon
+        for r in range(100):
+            x = uniform(low=minx, high=maxx)
+            y = uniform(low=miny, high=maxy)
+        
+       
         
         #Calculate the required number of random locations
         sample_number = 100
@@ -60,10 +78,8 @@ for idx, admin in gm_districts.iterrows():
                 #If the points do fall inside the district, keep the valid points
                 tweet_points.append(random_point)
         
-        #Initialize the population value
-        highest_pop = -float("inf")
-        #Initialize the location where most tweets generated
-        best_location = None
+       
+        
 
         #Looping through all the locations 
         for p in tweet_points:
