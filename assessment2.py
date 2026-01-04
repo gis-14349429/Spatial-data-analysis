@@ -19,6 +19,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 from matplotlib.pyplot import subplots, savefig
 from rasterio.plot import show as rio_show
 from skimage.draw import disk
+from random import seed
 from numpy import zeros
     #Importing files
 tweets_dataset = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/level3-tweets-subset.shp")
@@ -33,6 +34,8 @@ rows = pop_data.shape[0]
 cols = pop_data.shape[1]
 
 outputSurface = zeros((rows,cols), dtype = 'float32')
+#Set the seed for analysis
+seed(2025)
 
 def weighted_redistribution (w,s):       
     #Creating an empty list
@@ -89,6 +92,7 @@ def weighted_redistribution (w,s):
             for r_idx, c_idx in zip(r,c):
                 outputSurface[r_idx][c_idx] += w
     return outputSurface
+
 outputSurface = weighted_redistribution (w=1.0, s=0.2)
 
 #Creating a map
@@ -99,7 +103,7 @@ rio_show(
     outputSurface,
     ax=my_ax,
     transform=transform,
-    cmap="plasma",
+    cmap="magma",
     )
 
 gm_districts.boundary.plot(
