@@ -60,7 +60,7 @@ def weighted_redistribution (w,s):
             best_location = None
             
             #Checking multiple random locations inside the polygon
-            for spot in range(100):
+            for spot in range(1000):
                 x = uniform(low=minx, high=maxx)
                 y = uniform(low=miny, high=maxy)
                 random_point = Point(x,y)
@@ -88,7 +88,7 @@ def weighted_redistribution (w,s):
             r,c = disk ((row,col),radius,shape=(rows,cols))
             for r_idx, c_idx in zip(r,c):
                 outputSurface[r_idx][c_idx] += w
-        return outputSurface
+    return outputSurface
 outputSurface = weighted_redistribution (w=1.0, s=0.2)
 
 #Creating a map
@@ -99,12 +99,12 @@ rio_show(
     outputSurface,
     ax=my_ax,
     transform=transform,
-    cmap="hot",
+    cmap="plasma",
     )
 
 gm_districts.boundary.plot(
     ax=my_ax,
-    color='black',
+    color='white',
     linewidth=1
     )
 
