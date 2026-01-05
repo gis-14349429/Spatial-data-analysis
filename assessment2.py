@@ -18,7 +18,6 @@ from matplotlib_scalebar.scalebar import ScaleBar
 from matplotlib.pyplot import subplots, savefig
 from rasterio.plot import show as rio_show
 from skimage.draw import disk
-from random import seed
 from numpy import zeros
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
@@ -35,8 +34,6 @@ rows = pop_data.shape[0]
 cols = pop_data.shape[1]
 
 outputSurface = zeros((rows,cols), dtype = 'float32')
-#Set the seed for analysis
-seed(2025)
 
 def weighted_redistribution (w,s):       
     #Creating an empty list
@@ -47,7 +44,7 @@ def weighted_redistribution (w,s):
         #Geometry of the admin
         geom = admin.geometry 
         
-        #Get the bounds radius of the admin
+        #Get the bounding radius of the admin
         minx, miny, maxx, maxy = geom.bounds
         
         #Select points within this polygon
