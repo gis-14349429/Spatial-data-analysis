@@ -25,9 +25,9 @@ from numpy import zeros
 from matplotlib.lines import Line2D
 
 #Importing files
-tweet_points = read_file("../../data/wr/level3-tweets-subset.shp")
-gm_districts = read_file("../../data/wr/gm-districts.shp")
-with rio_open ("../../data/wr/100m_pop_2019.tif") as pop:
+tweet_points = read_file("./data/wr/level3-tweets-subset.shp")
+gm_districts = read_file("./data/wr/gm-districts.shp")
+with rio_open ("./data/wr/100m_pop_2019.tif") as pop:
     pop_data = pop.read(1)
     transform = pop.transform
  #Matching the coordinate system
