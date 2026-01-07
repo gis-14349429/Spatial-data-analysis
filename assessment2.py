@@ -23,15 +23,15 @@ from skimage.draw import disk
 from matplotlib.cm import ScalarMappable
 from numpy import zeros
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
-    #Importing files
-tweets_dataset = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-Assessment2/data/wr/level3-tweets-subset.shp")
-gm_districts = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/gm-districts.shp")
-with rio_open ("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/100m_pop_2019.tif") as pop:
+
+#Importing files
+tweet_points = read_file("../../data/wr/level3-tweets-subset.shp")
+gm_districts = read_file("../../data/wr/gm-districts.shp")
+with rio_open ("../../data/wr/100m_pop_2019.tif") as pop:
     pop_data = pop.read(1)
     transform = pop.transform
  #Matching the coordinate system
-tweets_dataset = tweets_dataset.to_crs(gm_districts.crs)
+tweet_points = tweet_points.to_crs(gm_districts.crs)
 #Creating output surfaces
 rows = pop_data.shape[0]
 cols = pop_data.shape[1]
@@ -39,8 +39,6 @@ cols = pop_data.shape[1]
 outputSurface = zeros((rows,cols), dtype = 'float32')
 
 def weighted_redistribution (w,s):       
-    #Creating an empty list
-    tweet_points = tweets_dataset
     #Looping over each administrative area
     for idx, admin in gm_districts.iterrows():
         
@@ -55,7 +53,7 @@ def weighted_redistribution (w,s):
         if tweet_points_in_admin.empty:
             continue
         
-        for _, points in tweet_points_in_admin.iterrows():
+        for _, point in tweet_points_in_admin.iterrows():
             #Initialize the population value
             highest_pop = -float("inf")
             best_location = None
@@ -94,7 +92,7 @@ outputSurface = weighted_redistribution (w=1.0, s=0.2)
 
 #Creating a map
 fig, my_ax = subplots(1,1,figsize=(16,10))
-my_ax.set_facecolor('#bcbddc')
+my_ax.set_facecolor('#f0f0f0')
 my_ax.set_title("Twitter activity in Greater Manchester")
 
 rio_show(
@@ -118,15 +116,15 @@ my_ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
     ha='center', va='center', fontsize=20, xycoords=my_ax.transAxes)
 
 # add scalebar
-my_ax.add_artist(ScaleBar(dx=1, units="m", location="lower right"))
+my_ax.add_artist(ScaleBar(dx=100, units="m", location="lower right"))
 
 #Adding a color bar
-fig.colorbar(ScalarMappable(norm=Normalize(vmin=floor(outputSurface.min()), vmax=ceil(outputSurface.max())), cmap='plasma'), ax=my_ax, pad=0.01)
+fig.colorbar(ScalarMappable(norm=Normalize(vmin=floor(outputSurface.min()), vmax=ceil(outputSurface.max())), cmap='plasma'), ax=my_ax, pad=0.01, label='Tweet Density')
 
-# add legend for point
+# add legend
 my_ax.legend(
     handles=[
-        Line2D([0],[0],color='white', linewidth=2, label='Greater Manchester boroughs boundaries',
+        Line2D([0],[0],color='white', linewidth=2, label='Greater Manchester borough boundaries',
            )
         ],
     loc='lower left'
@@ -134,7 +132,7 @@ my_ax.legend(
     
 
 #Save the image
-savefig('./out/twitter_activity_gm.png')
+savefig('./out/twitter_activity_gm.png', bbox_inches='tight')
     
         
        
