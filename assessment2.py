@@ -9,6 +9,7 @@ start_time = perf_counter()
 
 # --- NO CODE ABOVE HERE ---
 
+#Import statements 
 from geopandas import read_file
 from rasterio import open as rio_open
 from numpy.random import uniform
@@ -29,13 +30,14 @@ tweet_points = read_file("./data/wr/level3-tweets-subset.shp")
 gm_districts = read_file("./data/wr/gm-districts.shp")
 with rio_open ("./data/wr/100m_pop_2019.tif") as pop:
     pop_data = pop.read(1)
+    #Converting raster grids to real-world coordinates
     transform = pop.transform
- #Matching the coordinate system
+#Matching the coordinate system
 tweet_points = tweet_points.to_crs(gm_districts.crs)
 #Creating output surfaces
 rows = pop_data.shape[0]
 cols = pop_data.shape[1]
-
+#Storing the result as a raster surface
 outputSurface = zeros((rows,cols), dtype = 'float32')
 
 def weighted_redistribution (w,s):       
@@ -53,6 +55,7 @@ def weighted_redistribution (w,s):
         if tweet_points_in_admin.empty:
             continue
         
+        #Looping over each tweet point inside the current administrative area, one point at a time
         for _, point in tweet_points_in_admin.iterrows():
             #Initialize the population value
             highest_pop = -float("inf")
@@ -109,19 +112,19 @@ gm_districts.boundary.plot(
     )
 
 
-# add north arrow
+#add north arrow
 x, y, arrow_length = 0.97, 0.99, 0.1
 my_ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
     arrowprops=dict(facecolor='black', width=5, headwidth=15),
     ha='center', va='center', fontsize=20, xycoords=my_ax.transAxes)
 
-# add scalebar
+#add scalebar
 my_ax.add_artist(ScaleBar(dx=100, units="m", location="lower right"))
 
 #Adding a color bar
 fig.colorbar(ScalarMappable(norm=Normalize(vmin=floor(outputSurface.min()), vmax=ceil(outputSurface.max())), cmap='plasma'), ax=my_ax, pad=0.01, label='Tweet Density')
 
-# add legend
+#add legend
 my_ax.legend(
     handles=[
         Line2D([0],[0],color='white', linewidth=2, label='Greater Manchester borough boundaries',
@@ -135,11 +138,6 @@ my_ax.legend(
 savefig('./out/twitter_activity_gm.png', bbox_inches='tight')
     
         
-       
-        
-
-        
-
 
 # --- NO CODE BELOW HERE ---
 
