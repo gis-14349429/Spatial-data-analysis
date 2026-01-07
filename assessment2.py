@@ -12,17 +12,20 @@ start_time = perf_counter()
 from geopandas import read_file
 from rasterio import open as rio_open
 from numpy.random import uniform
+from math import floor, ceil
 from shapely.geometry import Point
 from rasterio.transform import rowcol
 from matplotlib_scalebar.scalebar import ScaleBar
+from matplotlib.colors import Normalize
 from matplotlib.pyplot import subplots, savefig
 from rasterio.plot import show as rio_show
 from skimage.draw import disk
+from matplotlib.cm import ScalarMappable
 from numpy import zeros
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
     #Importing files
-tweets_dataset = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/level3-tweets-subset.shp")
+tweets_dataset = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-Assessment2/data/wr/level3-tweets-subset.shp")
 gm_districts = read_file("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/gm-districts.shp")
 with rio_open ("C:/Users/User/OneDrive - The University of Manchester/UGIS/GitHub/ugis-assessment2/data/wr/100m_pop_2019.tif") as pop:
     pop_data = pop.read(1)
@@ -98,7 +101,7 @@ rio_show(
     outputSurface,
     ax=my_ax,
     transform=transform,
-    cmap="magma",
+    cmap="plasma",
     )
 
 gm_districts.boundary.plot(
@@ -115,14 +118,20 @@ my_ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
     ha='center', va='center', fontsize=20, xycoords=my_ax.transAxes)
 
 # add scalebar
-my_ax.add_artist(ScaleBar(dx=1, units="km", location="lower right"))
+my_ax.add_artist(ScaleBar(dx=1, units="m", location="lower right"))
+
+#Adding a color bar
+fig.colorbar(ScalarMappable(norm=Normalize(vmin=floor(outputSurface.min()), vmax=ceil(outputSurface.max())), cmap='plasma'), ax=my_ax, pad=0.01)
 
 # add legend for point
 my_ax.legend(
     handles=[
-        Patch(facecolor=(0, 0.5, 1, 0.5), edgecolor='white', label=f'Boroughs of Manchester'),
-        Line2D([0], [0], marker='o', color=(1,1,1,0), label='Redistributed tweet points', markerfacecolor='red', markersize=8)
-    ], loc='lower left')
+        Line2D([0],[0],color='white', linewidth=2, label='Greater Manchester boroughs boundaries',
+           )
+        ],
+    loc='lower left'
+)
+    
 
 #Save the image
 savefig('./out/twitter_activity_gm.png')
